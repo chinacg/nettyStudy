@@ -1,8 +1,6 @@
-package Servers;
+package Servers.ServerInstances;
 
-import handlers.EchoServerHandler;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
@@ -11,22 +9,24 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
 import java.net.InetSocketAddress;
-
+import Servers.handlers.*;
 public class EchoServer {
     private final int port;
 
     public EchoServer(int port) {
         this.port = port;
     }
-    public static void main(String[] args) throws Exception{
-        if(args.length !=1){
-            System.err.println("Usage:"+EchoServer.class.getSimpleName()+
+
+    public static void main(String[] args) throws Exception {
+        if (args.length != 1) {
+            System.err.println("Usage:" + EchoServer.class.getSimpleName() +
                     " ");
         }
         int port = Integer.parseInt(args[0]);// 设置端口值
         new EchoServer(port).start();
     }
-    public void start() throws Exception{
+
+    public void start() throws Exception {
         final EchoServerHandler echoServerHandler = new EchoServerHandler();
         EventLoopGroup group = new NioEventLoopGroup();// 创建loopgroup
         try {
@@ -43,7 +43,7 @@ public class EchoServer {
                     });
             ChannelFuture f = b.bind().sync(); //异步地绑定服务器；调用sync()方法阻塞等待直到绑定完成
             f.channel().closeFuture().sync(); //获取Channel的closeFurure，并且阻塞当前线程直到它完成
-        }finally {
+        } finally {
             group.shutdownGracefully().sync();//关闭EventLoopGroup,释放所有资源
         }
 
